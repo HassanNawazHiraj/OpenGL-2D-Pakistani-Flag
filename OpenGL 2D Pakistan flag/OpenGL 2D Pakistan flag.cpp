@@ -1,20 +1,63 @@
-// OpenGL 2D Pakistan flag.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include <iostream>
 #include <GL/freeglut.h>
-int main()
+
+void init(void);
+void display(void);
+
+
+int main(int argc, char** argv)
 {
-    std::cout << "Hello World!\n";
+	//Step#1 Create and initialize glut windowing system
+	glutInit(&argc, argv);
+	glutInitWindowSize(600, 600);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("Android/Robot");
+	//Step#2 Do Open GL related initializations
+	init();
+	//Step#3 Register Call back methods or Event Handler methods
+	glutDisplayFunc(display);
+	//Step#4 Enter in  main loop (an infinite loop listening to registered events and then call their registered methods if any)
+	glutMainLoop();
+	return 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void init(void) {
+	// select background color
+	glClearColor(1.0, 1.0, 1.0, 0.0); // (red, green, blue, alpha), used by glClear
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+	// Define world coordinate frame
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); // model in real word units 
+		// (left, right, bottom, top, near, far)
+}
+
+void drawCircle(float cx, float cy, float r, int num_segments) {
+	const float PI = 3.14159;
+	glBegin(GL_TRIANGLE_FAN);
+	for (int i = 0; i < num_segments; i++) {
+		float theta = i * (2.0f * PI / num_segments);
+		float x = r * cos(theta);
+		float y = r * sin(theta);
+		glVertex2f(x + cx, y + cy);
+	}
+	glEnd();
+}
+
+void drawBox(float topLeftX, float topLeftY, float width, float height) {
+	glBegin(GL_QUADS);
+	glVertex3f(topLeftX, topLeftY, 0.0);
+	glVertex3f(topLeftX + width, topLeftY, 0.0);
+	glVertex3f(topLeftX + width, topLeftY + height, 0.0);
+	glVertex3f(topLeftX, topLeftY + height, 0.0);
+	glEnd();
+}
+
+
+void display(void) {
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	
+	glFlush();
+}
